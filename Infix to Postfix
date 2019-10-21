@@ -1,0 +1,78 @@
+#include<stdio.h>
+#include<string.h>
+char stack[26];
+int top=-1;
+int isop(char ch)
+{
+    if(ch=='^'||ch=='*'||ch=='/'||ch=='+'||ch=='-')
+        return 1;
+    else
+        return 0;
+}
+
+int prec(char ch)
+{
+    if(ch=='^')
+        return 3;
+    else if(ch=='*'||ch=='/')
+        return 2;
+    else if(ch=='+'||ch=='-')
+        return 1;
+    else
+        return 0;
+}
+void push(char ch)
+{
+    top++;
+    stack[top]=ch;
+}
+char pop()
+{
+    char item;
+    item=stack[top];
+    top--;
+    return item;
+}
+void main()
+{
+    char inf[50],pos[50],x,y;
+    int i=0,j=0;
+    printf("\nEnter infix expression: ");
+    scanf("%s",inf);
+    strcat(inf,")");
+    push('(');
+    while(inf[i]!='\0')
+    {
+        if(inf[i]=='(')
+            push('(');
+        else if(inf[i]==')')
+        {   x=pop();
+            while(x!='(')
+            {
+                pos[j]=x;
+                j++;
+                x=pop();
+            }
+        }
+        else if(isop(inf[i])==1)
+        {
+            x=pop();
+            while(prec(inf[i])<=prec(x))
+            {
+                pos[j]=x;
+                j++;
+                x=pop();
+            }
+            push(x);
+            push(inf[i]);
+        }
+        else
+        {
+            pos[j]=inf[i];
+            j++;
+        }
+        i++;
+    }
+    pos[j]='\0';
+    printf("Postfix expression: %s",pos);
+}
