@@ -1,0 +1,226 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+    int expn;
+    int coeff;
+    struct node *link;
+}*h1=NULL,*h2=NULL,*h3=NULL,*p1,*p2,*p3,*ptr=NULL,*ptr1=NULL,*now;
+
+struct node *insertnode()
+{   int flag=0;
+    now=(struct node*)malloc(sizeof(struct node*));
+
+    return now;
+}
+
+struct node *polyadd(struct node *h1,struct node *h2)
+{   p1=h1;
+    p2=h2;
+    while(p1!=NULL&&p2!=NULL)
+    {
+        if(p1->expn>p2->expn)
+        {
+            if(h3==NULL)
+            {
+                h3=insertnode();
+                h3->expn=p1->expn;
+                h3->coeff=p1->coeff;
+                p3=h3;
+                p1=p1->link;
+            }
+            else
+            {   p3->link=insertnode();
+                (p3->link)->expn=p1->expn;
+                (p3->link)->coeff=p1->coeff;
+                p1=p1->link;
+                p3=p3->link;
+            }
+        }
+        else if(p1->expn<p2->expn)
+        {
+            if(h3==NULL)
+            {
+                h3=insertnode();
+                h3->expn=p2->expn;
+                h3->coeff=p2->coeff;
+                p3=h3;
+                p2=p2->link;
+            }
+            else
+            {
+                p3->link=insertnode();
+                (p3->link)->expn=p2->expn;
+                (p3->link)->coeff=p2->coeff;
+                p2=p2->link;
+                p3=p3->link;
+            }
+            
+        }
+        else
+        {
+            if(h3==NULL)
+            {
+                h3=insertnode();
+                h3->expn=p1->expn;
+                h3->coeff=(p1->coeff)+(p2->coeff);
+                p3=h3;
+                p1=p1->link;
+                p2=p2->link;
+            }
+            else
+            {
+                p3->link=insertnode();
+                (p3->link)->expn=p1->expn;
+                (p3->link)->coeff=(p1->coeff)+(p2->coeff);
+                p1=p1->link;
+                p2=p2->link;
+                p3=p3->link;
+            }
+        }
+    }
+    while(p1!=NULL)
+    {
+        p3->link=insertnode();
+        (p3->link)->expn=p1->expn;
+        (p3->link)->coeff=p1->coeff;
+        p1=p1->link;
+        p3=p3->link;
+    }
+    while(p2!=NULL)
+    {   p3->link=insertnode();
+        (p3->link)->expn=p2->expn;
+        (p3->link)->coeff=p2->coeff;
+        p2=p2->link;
+        p3=p3->link;
+    }
+    p3->link=NULL;
+    printpol(h3);
+    
+}
+void printpol(struct node *h)
+{  if(h==NULL)
+        printf("0");
+    else
+    {
+        ptr=h;
+        while(ptr->link!=NULL)
+        {   printf("%d x^%d + ",(ptr->coeff),(ptr->expn));
+            ptr=ptr->link;
+        }
+        printf("%d x^%d",(ptr->coeff),(ptr->expn));
+    }
+    printf("\n");
+}
+void main()
+{   char ch='y';
+    int flag;
+    printf("\nPOLYNOMIAL 1:\n");
+    printf("Do you want to add a term?(y/n): ");
+    scanf(" %c",&ch);
+    while(ch=='y'||ch=='Y')
+    {
+        now=(struct node*)malloc(sizeof(struct node*));
+        printf("\nEnter exponent: ");
+        scanf("%d",&(now->expn));
+        printf("Enter coefficient: ");
+        scanf("%d",&(now->coeff));
+        now->link=NULL;
+        if(h1==NULL)
+            h1=now;
+        else if(now->expn > h1->expn)
+        {
+            now->link=h1;
+            h1=now;
+        }
+        else
+        {   ptr=h1;
+            ptr1=h1;
+            if(h1->link==NULL)
+            {
+                h1->link=now;
+            }
+            else
+            {
+                while(now->expn <= ptr->expn && ptr->link != NULL)
+                {   ptr1=ptr;
+                    ptr=ptr->link;
+                }
+
+                if(ptr->link==NULL)
+                {   if(ptr->expn <= now->expn)
+                    {   ptr1->link=now;
+                        now->link=ptr;
+                    }
+                    else
+                        ptr->link=now;
+                }
+                else
+                {
+                    ptr1->link=now;
+                    now->link=ptr;
+                }
+
+            }
+        }
+        printf("Do you want to add another term?(y/n): ");
+        scanf(" %c",&ch);
+    }
+    printf("\nPolynomial 1 is:");
+    printpol(h1);
+    printf("\nPOLYNOMIAL 2:\n");
+    printf("Do you want to add a term?(y/n): ");
+    scanf(" %c",&ch);
+    while(ch=='y'||ch=='Y')
+    {
+        now=(struct node*)malloc(sizeof(struct node*));
+        printf("\nEnter exponent: ");
+        scanf("%d",&(now->expn));
+        printf("Enter coefficient: ");
+        scanf("%d",&(now->coeff));
+        now->link=NULL;
+        if(h2==NULL)
+            h2=now;
+        else if(now->expn > h2->expn)
+        {
+            now->link=h2;
+            h2=now;
+        }
+        else
+        {   ptr=h2;
+            ptr1=h2;
+            if(h2->link==NULL)
+            {
+                h2->link=now;
+            }
+            else
+            {
+                while(now->expn <= ptr->expn && ptr->link != NULL)
+                {   ptr1=ptr;
+                    ptr=ptr->link;
+                }
+
+                if(ptr->link==NULL)
+                {   if(ptr->expn <= now->expn)
+                    {   ptr1->link=now;
+                        now->link=ptr;
+                    }
+                    else
+                        ptr->link=now;
+                }
+                else
+                {
+                    ptr1->link=now;
+                    now->link=ptr;
+                }
+
+            }
+        }
+        printf("Do you want to add another term?(y/n): ");
+        scanf(" %c",&ch);
+    }
+    printf("\nPolynomial 2 is:");
+    printpol(h2);
+    printf("\nSUM:\n");
+    h3=polyadd(h1,h2);
+}
