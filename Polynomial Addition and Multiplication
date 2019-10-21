@@ -4,8 +4,9 @@ struct node
 {
     int expn;
     int coeff;
+    int flag;
     struct node *link;
-}*h1=NULL,*h2=NULL,*h3=NULL,*p1,*p2,*p3,*ptr=NULL,*ptr1=NULL,*now;
+}*h1=NULL,*h2=NULL,*h3=NULL,*h4=NULL,*p1,*p2,*p3,*p4,*ptr=NULL,*ptr1=NULL,*now;
 
 struct node *insertnode()
 {   int flag=0;
@@ -14,7 +15,7 @@ struct node *insertnode()
     return now;
 }
 
-struct node *polyadd(struct node *h1,struct node *h2)
+void polyadd(struct node *h1,struct node *h2)
 {   p1=h1;
     p2=h2;
     while(p1!=NULL&&p2!=NULL)
@@ -98,6 +99,57 @@ struct node *polyadd(struct node *h1,struct node *h2)
     printpol(h3);
     
 }
+
+void polymul(struct node *h1,struct node *h2)
+{
+    p1=h1;
+    while(p1!=NULL)
+    {   
+        p2=h2;
+        while(p2!=NULL)
+        {    if(h4==NULL)
+            {
+                h4=insertnode();
+                h4->expn=(p1->expn)+(p2->expn);
+                h4->coeff=(p1->coeff)*(p2->coeff);
+                p4=h4;
+                p2=p2->link;
+            }
+            else
+            {
+                
+                ptr=h4;
+                while((ptr->expn!=(p1->expn)*(p2->expn))&&ptr->link!=NULL)
+                {
+                    ptr=ptr->link;
+                }
+                if(ptr->link==NULL&&((ptr->expn)==(p1->expn)+(p2->expn)))
+                {   
+                    ptr->coeff=(ptr->coeff)+(p1->coeff*p2->coeff);
+                }
+                else if((ptr->expn)==(p1->expn)+(p2->expn))
+                {   
+                    ptr->coeff=(ptr->coeff)+(p1->coeff*p2->coeff);
+                }
+                else
+                {   p4->link=insertnode();
+                    p4=p4->link;
+                    p4->expn=p1->expn+p2->expn;
+                    p4->coeff=p1->coeff*p2->coeff;
+                }
+                p2=p2->link;
+            }
+            
+        }
+        
+        p1=p1->link;
+    }
+    
+    p4->link=NULL;
+    printpol(h4);
+    
+}
+
 void printpol(struct node *h)
 {  if(h==NULL)
         printf("0");
@@ -222,5 +274,8 @@ void main()
     printf("\nPolynomial 2 is:");
     printpol(h2);
     printf("\nSUM:\n");
-    h3=polyadd(h1,h2);
+    polyadd(h1,h2);
+    printf("\nPRODUCT:\n");
+    polymul(h1,h2);
+    
 }
