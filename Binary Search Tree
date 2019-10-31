@@ -1,0 +1,206 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *rchild,*lchild;
+}*root=NULL,*ptr=NULL,*ptr1=NULL,*new,*p,*p1;
+
+struct node *createnode()
+{
+    new=(struct node*)malloc(sizeof(struct node*));
+    return new;
+}
+
+struct node *inordsucc(struct node *p1)
+{
+    ptr1=p1->rchild;
+    while(ptr1->lchild!=NULL)
+        ptr1=ptr1->lchild;
+    return ptr1;
+}
+void insert(int item)
+{
+    if(root==NULL)
+    {   root=createnode();
+        root->rchild=NULL;
+        root->lchild=NULL;
+        root->data=item;
+    }
+    else
+    {
+        ptr=root;
+        while(ptr!=NULL)
+        {
+            if(item > ptr->data)
+            {
+                ptr1=ptr;
+                ptr=ptr->rchild;
+            }
+            else if(item < ptr->data)
+            {
+                ptr1=ptr;
+                ptr=ptr->lchild;
+            }
+            else if(item == ptr->data)
+            {
+                printf("\nElement already exists\n");
+                return;
+            }
+        }
+        p=createnode();
+        p->data=item;
+        p->rchild=NULL;
+        p->lchild=NULL;
+        if(item > ptr1->data)
+        {
+            ptr1->rchild=p;
+        }
+        else if(item < ptr1->data)
+        {
+            ptr1->lchild=p;
+        }
+    }
+}
+
+void delete(int item)
+{   int temp;
+    ptr=root;
+    while(ptr!=NULL && ptr->data!=item)
+    {
+        if(item > ptr->data)
+        {
+            ptr1=ptr;
+            ptr=ptr->rchild;
+        }
+        else if(item < ptr->data)
+        {
+            ptr1=ptr;
+            ptr=ptr->lchild;
+        }
+    }
+    if(ptr==NULL)
+    {
+        printf("\nEntered element is not present\n");
+    }
+    else
+    {
+        if(ptr->rchild==NULL && ptr->lchild==NULL)
+        {   if(ptr==ptr1->rchild)
+                ptr1->rchild=NULL;
+            else
+                ptr1->lchild=NULL;
+            free(ptr);
+        }
+        else if(ptr->rchild!=NULL && ptr->lchild!=NULL)
+        {
+            p=inordsucc(ptr);
+            p1=ptr;
+            temp=p->data;
+            printf("\nInorder successor:%d\n",temp);
+            delete(temp);
+            p1->data = temp ;
+        }
+        else
+        {
+            if(ptr->rchild==NULL)
+            {
+                if(ptr1->rchild==ptr)
+                    ptr1->rchild=ptr->lchild;
+                else if(ptr1->lchild==ptr)
+                    ptr1->lchild=ptr->lchild;
+            }
+            else if(ptr->lchild==NULL)
+            {
+                if(ptr1->rchild==ptr)
+                    ptr1->rchild=ptr->rchild;
+                else if(ptr1->lchild==ptr)
+                    ptr1->lchild=ptr->rchild;
+            }
+        }
+    }
+    
+}
+int search(struct node *ptr,int item)
+{
+    while(ptr!=NULL)
+    {
+        if(item > ptr->data)
+            ptr=ptr->rchild;
+        else if(item < ptr->data)
+            ptr=ptr->lchild;
+        else if(item == ptr->data)
+            return 1;
+    }
+    if(ptr==NULL)
+        return 0;
+}
+
+void inorder(struct node *ptr)
+{
+    if(ptr==NULL)
+        return;
+    inorder(ptr->lchild);
+    printf("%d\t",(ptr->data));
+    inorder(ptr->rchild);
+    
+}
+
+void preorder(struct node *ptr)
+{
+    if(ptr==NULL)
+        return;
+    printf("%d\t",(ptr->data));
+    preorder(ptr->lchild);
+    preorder(ptr->rchild);
+    
+}
+void postorder(struct node *ptr)
+{
+    if(ptr==NULL)
+        return;
+    postorder(ptr->lchild);
+    postorder(ptr->rchild);
+    printf("%d\t",(ptr->data));
+}
+void main()
+{
+    int c,item,src;
+    char ch='y';
+    while(ch=='y')
+    {
+        printf("\n1.INSERTION\n2.DELETION\n3.SEARCH\n4.DISPLAY\nEnter choice: ");
+        scanf("%d",&c);
+        if(c==1)
+        {   printf("\nEnter item to be inserted: ");
+            scanf("%d",&item);
+            insert(item);
+        }
+        if(c==2)
+        {
+            printf("\nEnter item to be deleted: ");
+            scanf("%d",&item);
+            delete(item);
+        }
+        if(c==3)
+        {   printf("\nEnter element to be searched: ");
+            scanf("%d",&item);
+            src=search(root,item);
+            if(src==1)
+                printf("\nElement FOUND in the tree\n");
+            else 
+                printf("\nElement NOT FOUND in the tree\n");
+        }
+        if(c==4)
+        {   printf("\nInorder traversal:\n");
+            inorder(root);
+            printf("\nPreorder traversal:\n");
+            preorder(root);
+            printf("\nPostorder traversal:\n");
+            postorder(root);
+        }
+        printf("\nDo you want to continue?(y/n): ");
+        scanf(" %c",&ch);
+    }
+}
